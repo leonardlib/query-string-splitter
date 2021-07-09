@@ -1,26 +1,42 @@
 import { useState } from 'react'
 import Head from 'next/head'
-import {Button, TextField} from "@material-ui/core";
-
+import {
+  Button,
+  TableContainer,
+  TextField,
+  Paper,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Fade,
+} from "@material-ui/core";
+import {Alert} from "@material-ui/lab";
 import { isURL } from '../utils'
-
 import styles from '../styles/Home.module.css'
 
 const Home = () => {
   const [url, setUrl] = useState('')
+  const [params, setParams] = useState(null)
+  const [error, setError] = useState(null)
 
   const handleSplitButton = () => {
+    setError(null);
+
     if (!isURL(url)) {
-      alert('Error')
+      setError('The string is not a valid URL')
       return
     }
 
-    const urlParams = new URLSearchParams(url);
-    const entries = urlParams.entries();
+    const urlParams = new URLSearchParams(url.split('?')[1]);
+    setParams(Object.fromEntries(urlParams.entries()));
+  };
 
-    for(const entry of entries) {
-      console.log(`${entry[0]}: ${entry[1]}`);
-    }
+  const handleClearButton = () => {
+    setUrl('');
+    setError(null);
+    setParams(null);
   };
 
   return (
@@ -37,6 +53,11 @@ const Home = () => {
         <p className={styles.description}>
           Get the name and the value of the query parameters from a URL string
         </p>
+        {error && (
+          <Fade in>
+            <Alert severity="error">{error}</Alert>
+          </Fade>
+        )}
         <div className={styles.grid}>
           <TextField
             variant="outlined"
@@ -55,7 +76,40 @@ const Home = () => {
           >
             Split URL
           </Button>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <Button
+            variant="contained"
+            size="large"
+            onClick={handleClearButton}
+            style={{ marginTop: 10 }}
+          >
+            Clear
+          </Button>
         </div>
+        {params && (
+          <Fade in>
+            <div className={styles.grid}>
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell className={styles.bold}>Parameter</TableCell>
+                      <TableCell className={styles.bold}>Value</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {Object.keys(params).map(key => (
+                      <TableRow key={key}>
+                        <TableCell className={styles.bold}>{key}</TableCell>
+                        <TableCell className={styles.wrap}>{params[key]}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </div>
+          </Fade>
+        )}
       </main>
       <footer className={styles.footer}>
         <a
