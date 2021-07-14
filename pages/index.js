@@ -43,6 +43,7 @@ const Home = () => {
     <div className={styles.container}>
       <Head>
         <title>Query String Splitter</title>
+        <meta name="google-site-verification" content="CWE3cMGLzGlJN8o3lkU-XWrZQxe97DLLJNCFmcKZoCI" />
         <meta name="description" content="Get the name and the value of the query parameters from a URL string" />
         <link rel="icon" href="/icon.png" />
       </Head>
